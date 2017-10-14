@@ -4,8 +4,10 @@ var __main = function () {
         'bullet': 'bullet.png',
     }
 
-    var game = Game(images, function (game) {
-        return Scene(game)
+    var game = new Game(images, function (game) {
+        // log(this)
+        this.scene = new MainScene(game)
+        // return Scene(game)
     })
 }
 
