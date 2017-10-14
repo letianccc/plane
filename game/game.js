@@ -1,6 +1,7 @@
 class Game{
 
-    constructor(images, callback){
+    constructor(fps, images, callback){
+        this.fps = fps
         this.actions = {}
         this.keydowns = {}
         this.images = {}
@@ -79,10 +80,9 @@ class Game{
     run() {
         var g = this
         this.callback(this)
-        log(g.scene)
         setInterval(function () {
             g.runLoop()
-        }, 1000/30)
+        }, 1000/this.fps)
     }
 
 

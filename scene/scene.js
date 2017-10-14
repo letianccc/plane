@@ -1,23 +1,38 @@
 class Scene {
     constructor(game) {
         this.game = game
-        this.elements = []
+        this.elements = {
+            'Background': [],
+            'Enemy': [],
+            'Player': [],
+            'Bullet': [],
+        }
+    }
+
+    bullets() {
+        return this.elements['Bullet']
     }
 
     addElement(image) {
-        this.elements.push(image)
+        this.elements[image.constructor.name].push(image)
     }
 
     update() {
-        for (var i = 0; i < this.elements.length; i++) {
-            var e = this.elements[i]
-            e.update()
+        for (var imageKind of Object.keys(this.elements)) {
+            for (var img of this.elements[imageKind]) {
+                img.update()
+            }
         }
     }
+
     draw() {
-        for (var i = 0; i < this.elements.length; i++) {
-            var e = this.elements[i]
-            this.game.drawImage(e)
+        for (var imageKind of Object.keys(this.elements)) {
+            for (var img of this.elements[imageKind]) {
+                if (img.alive == true) {
+                    this.game.drawImage(img)
+                }
+
+            }
         }
     }
 }
@@ -25,10 +40,18 @@ class Scene {
 class MainScene extends Scene{
     constructor(game) {
         super(game)
-        // log(game.scene)
-        this.player = new Player(game, 'player')
 
+        this.bg1 = new Background(game, 'background')
+        this.bg2 = new Background(game, 'background')
+        this.bg1.y = 0
+        this.bg2.y = -this.bg2.h
+        this.player = new Player(game, 'player')
+        this.enemy = new Enemy(game, 'enemy')
+
+        this.addElement(this.bg1)
+        this.addElement(this.bg2)
         this.addElement(this.player)
+        this.addElement(this.enemy)
 
         this.init_listener()
     }
@@ -51,50 +74,4 @@ class MainScene extends Scene{
             p.launch()
         })
     }
-
-
-
-
 }
-
-//
-// var Scene = function (game) {
-//     var s = {
-//         g: game
-//     }
-//
-//     var player = Player(game)
-//
-//     var bullets = []
-//
-//     game.register("ArrowUp", function () {
-//         player.moveUp()
-//     })
-//     game.register("ArrowDown", function () {
-//         player.moveDown()
-//     })
-//     game.register("ArrowLeft", function () {
-//         player.moveLeft()
-//     })
-//     game.register("ArrowRight", function () {
-//         player.moveRight()
-//     })
-//     game.register("f", function () {
-//         player.launch(bullets)
-//     })
-//
-//     s.update = function () {
-//         for (var i = 0; i < bullets.length; i++) {
-//             bullets[i].move()
-//         }
-//     }
-//
-//     s.draw = function () {
-//         game.drawImage(player)
-//         for (var i = 0; i < bullets.length; i++) {
-//             game.drawImage(bullets[i])
-//         }
-//     }
-//
-//     return s
-// }

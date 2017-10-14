@@ -1,13 +1,13 @@
 var __main = function () {
     var images = {
-        'player': 'player.png',
-        'bullet': 'bullet.png',
+        'player': 'image/player.png',
+        'bullet': 'image/bullet.png',
+        'background': 'image/background.jpg',
+        'enemy': 'image/enemy.png',
     }
 
-    var game = new Game(images, function (game) {
-        // log(this)
+    var game = new Game(30, images, function (game) {
         this.scene = new MainScene(game)
-        // return Scene(game)
     })
 }
 
