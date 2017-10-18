@@ -26,6 +26,7 @@ class Game{
     }
 
     drawImage(image) {
+        // log('r')
         this.context.drawImage(image.img, image.x, image.y, image.w, image.h)
     }
 

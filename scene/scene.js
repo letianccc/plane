@@ -21,10 +21,10 @@ class Scene {
         if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
-        if (imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
+        if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
             imageKind = 'Bullet'
         }
-        // log(imageKind)
+        log(image)
         this.elements[imageKind].push(image)
     }
 
@@ -32,7 +32,7 @@ class Scene {
         if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
-        if (imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
+        if (imageKind == 'PlayerBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
             imageKind = 'Bullet'
         }
         return this.elements[imageKind]
@@ -43,7 +43,7 @@ class Scene {
         if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
-        if (imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
+        if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
             imageKind = 'Bullet'
         }
         var images = this.elements[imageKind]
@@ -66,6 +66,7 @@ class Scene {
     draw() {
         for (var imageKind of Object.keys(this.elements)) {
             for (var img of this.elements[imageKind]) {
+                // log('t')
                 this.game.drawImage(img)
                 // if (imageKind == 'Bullet'){
                 //     log('draw', img.y)
@@ -83,8 +84,7 @@ class MainScene extends Scene{
         this.bg2 = new Background(game, this, 'background')
         this.bg1.y = 0
         this.bg2.y = -this.bg2.h
-        var speed = 8
-        this.player = new Player(game, this, 'player', speed)
+        this.player = new Player(game, this, 'player')
         this.enemeyTime = 100
         this.timer = 0
         this.hasBoss = false
@@ -132,7 +132,8 @@ class MainScene extends Scene{
             }
         }
 
-        this.test('GeneralEnemy')
+        // this.test('GeneralEnemy')
+
         // if (this.hasBoss == false) {
         //     this.generateBoss(this)
         //     this.hasBoss = true
@@ -256,7 +257,7 @@ class MainScene extends Scene{
 
         })
         this.game.register("f", function () {
-            p.launch()
+            p.attack()
         })
     }
 

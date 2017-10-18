@@ -5,7 +5,7 @@ var __main = function () {
         'enemyBullet': 'image/enemyBullet.png',
         'fireBullet': 'image/fireBullet.png',
         'background': 'image/background.jpg',
-        'enemy': 'image/enemy.png',
+        'enemy': 'image/enemy2.png',
         'enemy1': 'image/enemy1.png',
         'spark': 'image/spark.png',
         'buff': 'image/buff.gif',

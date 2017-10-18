@@ -8,11 +8,11 @@ class MyImage {
         this.rate = 1
         // log(imgName)
         this.img = game.imageByName(imgName)
-        this.x = 0
-        this.y = 0
-        // log(this.img)
-        this.w = this.img.width
-        this.h = this.img.height
+        // this.x = x
+        // this.y = y
+        // // log(this.img)
+        // this.w = this.img.width
+        // this.h = this.img.height
         // this.w = width
         // this.h = height
         // log(height)
@@ -22,13 +22,13 @@ class MyImage {
     update() {}
     draw() {}
 
-    remove() {
+    disappear() {
         this.scene.removeImage(this)
     }
 }
 
-class Player extends MyImage{
-    constructor(game, scene, imgName, speed) {
+class Player extends MyImage {
+    constructor(game, scene, imgName) {
         super(game, scene, imgName)
         this.game = game
         this.scene = scene
@@ -36,49 +36,62 @@ class Player extends MyImage{
         this.y = 130
         this.w = 20
         this.h = 20
-        this.speed = speed * this.rate
+        this.speed = 15
         this.buffAmount = 0
-        this.loadBullet = 0
-        this.alive = 1000
-        this.target = 'Enemy'
+        // this.maxBuffAmount = 5
+        this.maxBulletCooling = 2
+        this.bulletCooling = 0
+        this.lives = 1000
+        // this.target = 'Enemy'
+    }
+
+    attack() {
+        // log(this.bulletCooling)
+        this.bulletCooling--
+        if (this.isTimeToLaunch()) {
+            this.launch()
+            this.bulletCooling = this.maxBulletCooling
+        }
+    }
+
+    isTimeToLaunch() {
+        return this.bulletCooling <= 0
     }
 
     launch() {
-        this.loadBullet++
-        if (this.loadBullet >= 2 ) {
-            this.loadBullet = 0
+        // log('f')
+        var xIncrement = 0
+        var yIncrement = -5
+        var xSpeed = 0
+        var ySpeed = -20
+        var x = this.x + this.w / 2
+        var y = this.y
 
-            var xIncrement = 0
-            var yIncrement = -5
-            var xSpeed = 0
-            var ySpeed = -10
-            var x = this.x
-            var y = this.y
+        var b = new PlayerBullet(this.game, this.scene, x, y, xSpeed, ySpeed)
+        this.scene.addElement(b)
+        // log(b)
 
-            var b = new Bullet(this.game, this.scene, 'playerBullet', x, y, xSpeed, ySpeed, this.target)
-            this.scene.addElement(b)
-
-            if (this.buffAmount > 0) {
-                for (var i = 1; i <= this.buffAmount; i++) {
-                    if (i <= 2) {
-                        xIncrement += 5
-                        var x1 = x + xIncrement
-                        var x2 = x - xIncrement
-                    } else {
-                        yIncrement += 10
-                        y = y - yIncrement
-                        xSpeed = 4
-                    }
-                    var b1 = new Bullet(this.game, this.scene, 'playerBullet', x1, y, xSpeed, ySpeed, this.target)
-                    var b2 = new Bullet(this.game, this.scene, 'playerBullet', x2, y, -xSpeed, ySpeed, this.target)
-                    this.scene.addElement(b1)
-                    this.scene.addElement(b2)
+        if (this.buffAmount > 0) {
+            for (var i = 1; i <= this.buffAmount; i++) {
+                if (i <= 2) {
+                    xIncrement += 10
+                    var x1 = x + xIncrement
+                    var x2 = x - xIncrement
+                } else {
+                    yIncrement += 10
+                    y += yIncrement
+                    xSpeed = 10
                 }
+                var b1 = new PlayerBullet(this.game, this.scene, x1, y, xSpeed, ySpeed)
+                var b2 = new PlayerBullet(this.game, this.scene, x2, y, -xSpeed, ySpeed)
+                // var b1 = new Bullet(this.game, this.scene, 'playerBullet', x1, y, xSpeed, ySpeed, this.target)
+                // var b2 = new Bullet(this.game, this.scene, 'playerBullet', x2, y, -xSpeed, ySpeed, this.target)
+                this.scene.addElement(b1)
+                this.scene.addElement(b2)
             }
         }
-
-
     }
+
 
     update() {
         // log(this.y)
@@ -92,7 +105,7 @@ class Player extends MyImage{
                 if (this.buffAmount < 4) {
                     this.buffAmount++
                 }
-                this.scene.removeImage(buff)
+                buff.disappear()
             }
         }
     }
@@ -121,206 +134,247 @@ class Player extends MyImage{
     }
 }
 
-class Bullet extends MyImage{
-    constructor(game, scene, imgName, x, y, xSpeed, ySpeed, target) {
+class Bullet extends MyImage {
+    constructor(game, scene, imgName, launcherX, launcherY, xSpeed, ySpeed) {
         super(game, scene, imgName)
-        this.x = x
-        this.y = y
+        // this.x = launcherX
+        // this.y = launcherY
+        // log('launch', this.y)
+        // this.x = launcherX - this.w / 2
+        // this.y = launcherY
         this.xSpeed = xSpeed
         this.ySpeed = ySpeed
-        this.w = 20
-        this.h = 10
+
+        // this.xSpeed = xSpeed
+        // this.ySpeed = ySpeed
+        // this.w = 20
+        // this.h = 10
         // log('t', target)
-        this.target = target
+        // this.target = target
         // this.speed = 5 * this.rate
         // if (this.trace == true) {
         //
         // }
     }
 
-    // trace() {
-    //     var distance = this.scene.getDistance(this.target, this)
-    //
-    //     var xDelta = this.target.x - this.x
-    //     var yDelta = this.target.y - this.y
-    //     var sin = yDelta / distance
-    //     var cos = xDelta / distance
-    //     this.ySpeed = this.speed * sin
-    //     this.xSpeed = this.speed * cos
-    // }
-
     update() {
-        this.x += this.xSpeed
-        this.y += this.ySpeed
-
-
-
-
-        if (this.y == 0) {
-            this.scene.removeImage(this)
-        }
-
+        this.updatePosition()
         this.checkShot()
+        this.checkOutOfRange()
+    }
 
-        if (this.y >= 700 || this.y <= -10) {
-            this.remove()
-        }
+    updatePosition() {
+        this.move()
     }
 
     checkShot() {
         // log(this)
         // log(this.target)
         var targets = this.scene.getImages(this.target)
-
-
-        for (var t of targets) {
-            if (isCollide(this, t)) {
-                t.alive--
-
-                for( var i = 0; i < 100; i++) {
-                    var spark = new Spark(this.game, this.scene, 'spark', t.x + t.w / 2, t.y + t.h / 2)
-                    this.scene.addElement(spark)
-                }
-
-                if (t.alive == 0) {
-                    // for( var i = 0; i < 100; i++) {
-                    //     var spark = new Spark(this.game, this.scene, 'spark', t.x, t.y)
-                    //     this.scene.addElement('spark', spark)
-                    // }
-
-                    if (t.constructor.name == 'Enemy' && t.isBuff) {
-                        // log('s')
-                        var b = new Buff(this.game, this.scene, 'buff', this.x, this.y)
-                        this.scene.addElement(b)
-                    }
-
-                    // 删除元素
-                    this.scene.removeImage(t)
-
-                    this.scene.removeImage(this)
-                }
-
-
-
+        for (var target of targets) {
+            if (isCollide(this, target)) {
+                target.lives--
+                this.makeSpark(target)
+                this.disappear()
+                this.checkTargetAlive(target)
             }
         }
     }
 
-    remove() {
-        this.scene.removeImage(this)
+    makeSpark(image) {
+        for( var i = 0; i < 100; i++) {
+            sparkX = image.x + image.w / 2
+            sparkY = image.y + image.h / 2
+            var spark = new Spark(this.game, this.scene, sparkX, sparkY)
+            this.scene.addElement(spark)
+        }
     }
 
 }
 
-class EnemyBullet extends Bullet{
-    constructor(game, scene, imgName, x, y, xSpeed, ySpeed, target) {
-        super(game, scene, imgName, x, y, xSpeed, ySpeed, target)
-        this.target = this.scene.player
-        this.speed = 3
+class PlayerBullet extends Bullet {
+    constructor(game, scene, launcherX, launcherY, xSpeed, ySpeed) {
+        super(game, scene, 'fireBullet', launcherX, launcherY, xSpeed, ySpeed)
+        this.target = 'Enemy'
+        this.timer = 10
+        this.w = 5
+        this.h = 5
+        this.x = launcherX - this.w / 2
+        this.y = launcherY
+    }
+
+    checkTargetAlive(target) {
+        if (target.lives == 0) {
+            target.disappear()
+        }
+    }
+
+    checkOutOfRange() {
+        if (this.y < 0) {
+            this.disappear()
+        }
+    }
+
+    updatePosition() {
+        this.move()
+    }
+
+    move() {
+        this.x += this.xSpeed
+        this.y += this.ySpeed
+    }
+}
+
+class EnemyBullet extends Bullet {
+    constructor(game, scene, imgName, x, y, xSpeed, ySpeed) {
+        super(game, scene, imgName, x, y, xSpeed, ySpeed)
+        this.target = 'Player'
+        // this.speed = 3
+        // this.w = 30
+        // this.h = 15
+        // this.x = x - this.w / 2
+        // this.y = y
+        // this.xSpeed = xSpeed
+        // this.ySpeed = ySpeed
+        this.timer = 10
+    }
+
+    move() {
+        this.x += this.xSpeed
+        this.y += this.ySpeed
+    }
+
+    // update() {
+    //
+    //
+    //     // log(this.y)
+    //     // if (this.timer > 0) {
+    //     //     this.timer--
+    //     // }
+    //     // if (this.timer == 0) {
+    //     //     this.x += this.xSpeed
+    //     //     this.y += this.ySpeed
+    //     // }
+    //     //
+    //     // if (this.y == 0) {
+    //     //     this.scene.removeImage(this)
+    //     // }
+    //     //
+    //     // this.checkShot()
+    //     //
+    //     // if (this.y >= 700 || this.y <= -10) {
+    //     //     this.disappear()
+    //     // }
+    // }
+
+    // checkShot() {
+    //     // log(this)
+    //     // log(this.target)
+    //     // var targets = this.scene.getImages(this.target)
+    //     var target = this.target
+    //
+    //     if (isCollide(this, target)) {
+    //         target.lives--
+    //         this.makeSpark(target)
+    //         this.disappear()
+    //         this.checkTargetAlive()
+    //     }
+    // }
+
+    checkTargetAlive(target) {
+        if (target.lives == 0) {
+            target.disappear()
+        }
+    }
+
+    checkOutOfRange() {
+        if (this.y >= this.scene.limitY) {
+            this.disappear()
+        }
+    }
+}
+
+// 无发散 无追踪
+class GeneralBullet extends EnemyBullet {
+    constructor(game, scene, x, y, speed) {
+        super(game, scene, 'enemyBullet', x, y, 0, speed)
+        // this.target = this.scene.player
         this.w = 30
         this.h = 15
-        this.x = x - this.w / 2
-        this.y = y
-        this.xSpeed = xSpeed
-        this.ySpeed = ySpeed
-        this.timer = 10
-
-
-        // var distance = this.scene.getDistance(this.target, this)
-        //
-        // var xDelta = this.target.x - this.x
-        // var yDelta = this.target.y - this.y
-        // var sin = yDelta / distance
-        // var cos = xDelta / distance
-        // this.ySpeed = this.speed * sin
-        // this.xSpeed = this.speed * cos
-        // log(this.x, this.y)
-
-
-        // this.ySpeed = yDifference > 0 ? speed : -speed
-        // if (yDifference != 0) {
-        //     this.angle = xDifference / yDifference
-        //     this.speed = speed
-        //     this.xSpeed = this.ySpeed * this.angle
-        // } else {
-        //     this.xSpeed = speed
-        // }
-        // log(this)
-        // log('angle', this.angle)
-        // log('x', this.xSpeed)
-        // log('y', this.ySpeed)
-        // log()
-
-        // log('t', target)
-        // this.speed = 5 * this.rate
+        // this.x = x - this.w / 2
+        // this.y = y
+        // this.speed = speed
+        // this.timer = 10
     }
 
-    update() {
-        log(this.y)
-        if (this.timer > 0) {
-            this.timer--
-        }
-        if (this.timer == 0) {
-            this.x += this.xSpeed
-            this.y += this.ySpeed
-        }
-
-        if (this.y == 0) {
-            this.scene.removeImage(this)
-        }
-
-        this.checkShot()
-
-        if (this.y >= 700 || this.y <= -10) {
-            this.remove()
-        }
+    updatePosition() {
+        this.move()
     }
 
-    checkShot() {
-        // log(this)
-        // log(this.target)
-        // var targets = this.scene.getImages(this.target)
-        var t = this.target
+    // update() {
+    //     // if (this.timer > 0) {
+    //     //     this.timer--
+    //     // }
+    //
+    //     // if (this.timer == 0) {
+    //     //     this.y += this.speed
+    //     // }
+    //     // this.y += this.speed
+    //
+    //     // if (this.y == 0) {
+    //     //     this.scene.removeImage(this)
+    //     // }
+    //
+    //     // this.checkShot()
+    //     //
+    //     // if (this.y >= 700 || this.y <= -10) {
+    //     //     this.disappear()
+    //     // }
+    // }
 
-        if (isCollide(this, t)) {
-            t.alive--
+    // checkShot() {
+    //     // log(this)
+    //     // log(this.target)
+    //     // var targets = this.scene.getImages(this.target)
+    //     var t = this.target
+    //
+    //     if (isCollide(this, t)) {
+    //         t.alive--
+    //
+    //         for( var i = 0; i < 100; i++) {
+    //             var spark = new Spark(this.game, this.scene, 'spark', t.x + t.w / 2, t.y + t.h / 2)
+    //             this.scene.addElement(spark)
+    //         }
+    //
+    //         if (t.alive == 0) {
+    //             // for( var i = 0; i < 100; i++) {
+    //             //     var spark = new Spark(this.game, this.scene, 'spark', t.x, t.y)
+    //             //     this.scene.addElement('spark', spark)
+    //             // }
+    //
+    //             if (t.constructor.name == 'Enemy' && t.isBuff) {
+    //                 // log('s')
+    //                 var b = new Buff(this.game, this.scene, 'buff', this.x, this.y)
+    //                 this.scene.addElement(b)
+    //             }
+    //
+    //             // 删除元素
+    //             this.scene.removeImage('Player')
+    //
+    //             this.scene.removeImage(this)
+    //         }
+    //
+    //
+    //
+    //     }
+    // }
 
-            for( var i = 0; i < 100; i++) {
-                var spark = new Spark(this.game, this.scene, 'spark', t.x + t.w / 2, t.y + t.h / 2)
-                this.scene.addElement(spark)
-            }
-
-            if (t.alive == 0) {
-                // for( var i = 0; i < 100; i++) {
-                //     var spark = new Spark(this.game, this.scene, 'spark', t.x, t.y)
-                //     this.scene.addElement('spark', spark)
-                // }
-
-                if (t.constructor.name == 'Enemy' && t.isBuff) {
-                    // log('s')
-                    var b = new Buff(this.game, this.scene, 'buff', this.x, this.y)
-                    this.scene.addElement(b)
-                }
-
-                // 删除元素
-                this.scene.removeImage('Player')
-
-                this.scene.removeImage(this)
-            }
-
-
-
-        }
-    }
-
-    remove() {
-        this.scene.removeImage(this)
-    }
+    // disappear() {
+    //     this.scene.removeImage(this)
+    // }
 }
 
-
-
-class Background extends MyImage{
+class Background extends MyImage {
     constructor(game, scene, imgName) {
         super(game, scene, imgName)
         this.x = 0
@@ -345,88 +399,99 @@ class Enemy extends MyImage{
         // this.h = height
         this.x = x
         this.y = y
-        // this.speed = 1
         // this.isBuff = isBuff
-        // this.bulletCooling = bulletCooling
         // this.lives = lives
         // this.timer = 10
         this.target = 'Player'
-        // this.bulletKind = bulletKind
+
+        this.timer = 0
+        this.attackTime = 200
+        // this.stopTime = 20
     }
 
-    // constructor(game, scene, imgName, x, y, width, height, bulletKind, bulletCooling, lives, isBuff=false) {
-    //     // log(isBuff)
-    //     super(game, scene, imgName)
-    //     this.w = width
-    //     this.h = height
-    //     this.x = x
-    //     this.y = y
-    //     this.speed = 1
-    //     this.isBuff = isBuff
-    //     this.bulletCooling = bulletCooling
-    //     this.lives = lives
-    //     // this.timer = 10
-    //     this.target = 'Player'
-    //     this.bulletKind = bulletKind
-    // }
+    update() {
+        this.updateTimer()
 
+        this.updatePosition()
+        // log(this)
+        if (this.timer >= this.attackTime) {
+            this.attack()
+        }
+
+        this.checkOutOfRange()
+    }
+
+    updateTimer() {
+        this.timer++
+    }
+
+    updatePosition() {
+        this.move()
+    }
 
     move() {
+        // this.x += this.xSpeed
+        // this.y += this.ySpeed
         this.y += this.speed
     }
 
     checkOutOfRange() {
         if (this.y >= this.scene.limitY) {
-            this.remove()
+            this.disappear()
         }
     }
 }
 
-
+// class Fighter extends Enemy {
+//     constructor(game, scene, imgName, x, y) {
+//         super(game, scene, imgName, x, y)
+//     }
+//
+//     attack() {
+//         this.launch()
+//     }
+// }
+//
+// class ForlornHope extends Enemy {
+//     constructor(game, scene, imgName, x, y) {
+//         super(game, scene, imgName, x, y)
+//     }
+//
+//     attack() {
+//         this.rapidMove()
+//     }
+// }
 
 // 普通子弹 无发散 无追踪 子弹对数1
-class GeneralEnemy extends Enemy{
+class GeneralEnemy extends Enemy {
     constructor(game, scene, imgName, x, y, isBuff=false) {
         super(game, scene, imgName, x, y)
         this.w = 40
         this.h = 40
         this.speed = 1
+        this.bulletSpeed = 1
         this.maxBulletCooling = 60
         this.bulletCooling = 0
         this.lives = 10
         this.bullet = 'enemyBullet'
         this.isBuff = isBuff
         // log('enemy', this.y, this.h)
-    }
-
-    update() {
-
-        if (this.y <= 0)
-        this.move()
-
-        if (this.y >= 0) {
-            this.launch()
-        }
-
-        this.checkOutOfRange()
-
-        // if (this.y >= this.scene.limitY) {
-        //     this.remove()
-        // }
+        this.attackTime = 30
+        this.stopTime = 20
     }
 
     launch() {
-
         this.bulletCooling--
         if (this.bulletCooling <= 0) {
             this.bulletCooling = this.maxBulletCooling
 
-            var xSpeed = 0
-            var ySpeed = 5
-            var x = this.x + this.w / 2
+            // var xSpeed = 0
+            // var ySpeed = 5
+            var x = this.x
+            // var y = this.y
             var y = this.y + this.h
 
-            var b = new EnemyBullet(this.game, this.scene, this.bullet, x, y, xSpeed, ySpeed, this.target)
+            var b = new GeneralBullet(this.game, this.scene, x, y, this.bulletSpeed)
             this.scene.addElement(b)
             // log(this)
             // log('enemy', this.y, this.h)
@@ -436,27 +501,43 @@ class GeneralEnemy extends Enemy{
         }
     }
 
-    // move() {
-    //     this.y += this.speed
-    // }
-}
+    updatePosition() {
+        if (this.y <= 30) {
+            this.move()
+        }
+    }
 
+    attack() {
+        this.launch()
+    }
+}
+// 发散 可追踪 子弹对数不定
 class Enemy1 extends Enemy {
     constructor(game, scene, imgName, x, y, isBuff=false, isTrace=false) {
-        super(game, scene, imgName, x, y, isBuff)
+        super(game, scene, imgName, x, y)
+        this.isBuff = isBuff
         this.bullet = 'fireBullet'
         this.timer = 0
         this.isTrace = isTrace
         this.bulletCount = 2
+        this.xBulletSpeed = 0
+        this.yBulletSpeed = 5
+        this.speed = 5
+        this.maxBulletCooling = 60
+        this.bulletCooling = this.maxBulletCooling
+        this.attackTime = 20
+        this.stopTime = 20
+    }
+
+    attack() {
+        this.launch()
     }
 
     launch() {
-        this.loadBullet++
-        if (this.loadBullet >= 60) {
-            this.loadBullet = 0
+        this.bulletCooling--
+        if (this.bulletCooling <= 0) {
+            this.bulletCooling = this.maxBulletCooling
 
-            var xSpeed = 0
-            var ySpeed = 5
             var x = this.x + this.w / 2
             var y = this.y + this.h
             // var xSpeed = 0
@@ -465,36 +546,25 @@ class Enemy1 extends Enemy {
 
             if (this.isTrace == true) {
                 // log('true')
-                var speed = this.speed()
-                xSpeed = speed['xSpeed']
-                ySpeed = speed['ySpeed']
+                var speed = this.speed(this.speed)
+                this.xBulletSpeed = speed['xSpeed']
+                this.yBulletSpeed = speed['ySpeed']
             }
 
             for (var i = 0; i < this.bulletCount; i++) {
                 if (this.isTrace == false) {
                     // log('false')
-                    xSpeed += 1
+                    this.xBulletSpeed += 1
                 }
 
                 xIncrement += 20
                 var x1 = x - xIncrement
                 var x2 = x + xIncrement
-                var b1 = new EnemyBullet(this.game, this.scene, this.bullet, x1, y, -xSpeed, ySpeed, this.target)
-                var b2 = new EnemyBullet(this.game, this.scene, this.bullet, x2, y, xSpeed, ySpeed, this.target)
+                var b1 = new EnemyBullet(this.game, this.scene, this.bullet, x1, y, -this.xBulletSpeed, this.yBulletSpeed, this.target)
+                var b2 = new EnemyBullet(this.game, this.scene, this.bullet, x2, y, this.xBulletSpeed, this.yBulletSpeed, this.target)
                 this.scene.addElement(b1)
                 this.scene.addElement(b2)
             }
-
-            // var xSpeed = -10
-            // var ySpeed = 5
-            // var x = this.x + 20
-            // var y = this.y + this.h
-            //
-            // for (var i = 0; i < 4; i++) {
-            //     xSpeed += 5
-            //     var b = new EnemyBullet(this.game, this.scene, this.bullet, x, y, xSpeed, ySpeed, this.target)
-            //     this.scene.addElement(b)
-            // }
         }
     }
 
@@ -527,13 +597,68 @@ class Enemy1 extends Enemy {
 
         // if (this.timer <= 20 || this.timer >= 100) {
         //     this.move()
-        //     if (this.y >= 700) {
-        //         this.remove()
+        //     if (this.y >= this.scene.limitY) {
+        //         this.disappear()
         //     }
         // } else {
         //     this.launch()
         // }
 
+    }
+}
+// 碰撞攻击 可追踪
+class ForlornHope extends Enemy {
+    constructor(game, scene, imgName, x, y, isBuff=false, isTrace=true) {
+        super(game, scene, imgName, x, y, isBuff)
+        this.xSpeed = 0
+        this.ySpeed = 5
+        this.timer = 0
+
+        // this.attackTime = 100
+        // this.stopTime = 20
+        // this.attackSpeed = 20
+    }
+
+    updatePosition() {
+        if (this.timer < this.stopTime) {
+            this.move()
+        }
+    }
+
+    move() {
+        this.x += this.xSpeed
+        this.y += this.ySpeed
+    }
+
+    attack() {
+        this.rapidCollide()
+    }
+
+    rapidCollide() {
+        this.setAttackState()
+        this.move()
+    }
+
+    setAttackState() {
+        var speed = this.speed(this.attackSpeed)
+        this.xSpeed = speed['xSpeed']
+        this.ySpeed = speed['ySpeed']
+    }
+
+    speed(totalSpeed) {
+        var distance = this.scene.getDistance(this.target, this)
+        var xDelta = this.target.x - this.x
+        var yDelta = this.target.y - this.y
+        var sin = yDelta / distance
+        var cos = xDelta / distance
+        var ySpeed = totalSpeed * sin
+        var xSpeed = totalSpeed * cos
+        var o = {
+            'xSpeed': xSpeed,
+            'ySpeed': ySpeed
+        }
+
+        return o
     }
 }
 
@@ -596,8 +721,8 @@ class Boss extends MyImage{
 }
 
 class Spark extends MyImage{
-    constructor(game, scene, imgName, x, y) {
-        super(game, scene, imgName)
+    constructor(game, scene, x, y) {
+        super(game, scene, 'spark')
         this.game = game
         this.scene = scene
         this.x = x
