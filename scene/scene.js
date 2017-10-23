@@ -27,7 +27,7 @@ class Scene {
         if (imageKind == 'Boss1') {
             imageKind = 'Boss'
         }
-        if (imageKind == 'MainBackground') {
+        if (imageKind == 'StartBackground' || imageKind == 'MainBackground') {
             imageKind = 'Background'
         }
 
@@ -87,7 +87,7 @@ class Scene {
 class StartScene extends Scene{
     constructor(game) {
         super(game)
-        this.bg = new Background(game, this, 'background')
+        this.bg = new StartBackground(game, this, 'background')
         this.addElement(this.bg)
         this.init_listener()
     }
@@ -151,10 +151,12 @@ class MainScene extends Scene{
         }
 
         // this.test1()
-        // this.time(10, 'GeneralEnemy', 200)
+        var e = this.time(10, 'Enemy1', 100)
+        // log(e)
+        // log(this.elements)
 
         // this.startFirstPass()
-        this.startSecondPass()
+        // this.startSecondPass()
 
 
         // if (this.timer == 10) {
@@ -173,7 +175,7 @@ class MainScene extends Scene{
     }
 
     startFirstPass() {
-        this.time(20, 'ForlornHope', 40)
+        // log(this.time(20, 'ForlornHope', 40))
         this.time(30, 'ForlornHope', 150)
         this.time(40, 'ForlornHope', 200)
         this.time(120, 'GeneralEnemy', 50)
@@ -182,7 +184,7 @@ class MainScene extends Scene{
         this.time(350, 'ForlornHope', 90)
         this.time(350, 'ForlornHope', 160)
         this.time(550, 'Enemy1', 220)
-        this.time(1200, 'Boss1', this.limitX/2)
+        // this.time(1200, 'Boss1', this.limitX/2)
     }
 
     startSecondPass() {
@@ -211,7 +213,7 @@ class MainScene extends Scene{
         var x = x1 + r*Math.sin(30)
         var y = y1 + r*Math.cos(30)
         var target = 'Player'
-        log(x1)
+        // log(x1)
         // var b = new PlayerBullet(this.game, this.scene, imgName, w, h, x, y, xSpeed, ySpeed, target)
 
         // var b = new EnemyBullet(this.game, this.scene, 'fireBullet', x, y, 0, this.bulletSpeed)
@@ -260,21 +262,21 @@ class MainScene extends Scene{
 
         // log('enemy')
         var y = -20
-        var k = getRandomInt(0, 10)
-        var isBuff = k == 9 ? true : false
+        // var k = getRandomInt(0, 10)
+        // var isBuff = k == 9 ? true : false
         // var isBuff = true
         // var x1 = getRandomInt(5,135)
         var x1 = x
-        var w = 30
-        var h = 10
-        var isTrace = true
-        var parameter = "scene.game, scene, \'enemy\', x1, y, w, h, isTrace, isBuff"
+        // var w = 30
+        // var h = 10
+        var isTrace = false
+        var parameter = "scene.game, scene, \'enemy\', x1, y, isTrace"
         // var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
         var e1 = eval("new " + classname + "(" + parameter + ")")
         // log("new " + classname + "(" + parameter + ")")
         // log(e1)
         scene.addElement(e1)
-        // log(e1)
+        log(e1)
         return e1
     }
 
