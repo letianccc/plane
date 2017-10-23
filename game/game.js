@@ -8,8 +8,19 @@ class Game{
         this.canvas = document.getElementById('canvas')
         this.context = this.canvas.getContext('2d')
         this.callback = callback
+        this.start = false
 
         this.load(images)
+        this.initListener()
+    }
+
+    startMainScene() {
+        this.scene = new MainScene(this)
+        this.clearStartScene()
+    }
+
+    clearStartScene() {
+        delete this.actions['s']
     }
 
     imageByName(imageName) {
@@ -19,6 +30,10 @@ class Game{
 
     update() {
         this.scene.update()
+    }
+
+    clearImage() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
 
     draw() {
@@ -35,7 +50,7 @@ class Game{
     }
 
     load(images) {
-        this.initListener()
+        // this.initListener()
         this.loadImage(images)
     }
 
@@ -71,8 +86,7 @@ class Game{
         }
     }
 
-
-    runLoop() {
+    listen() {
         var actions = Object.keys(this.actions)
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
@@ -80,17 +94,19 @@ class Game{
                 this.actions[key]()
             }
         }
-        // update
+    }
+
+    runLoop() {
+        this.listen()
         this.update()
-        // clear
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        // draw
+        this.clearImage()
         this.draw()
     }
 
     run() {
         var g = this
         this.callback(this)
+
         setInterval(function () {
             g.runLoop()
         }, 1000/this.fps)

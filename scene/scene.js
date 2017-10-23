@@ -4,7 +4,7 @@ class Scene {
     constructor(game) {
         this.game = game
         this.limitX = 280
-        this.limitY = 130
+        this.limitY = 150
         this.elements = {
             'Background': [],
             'Bullet': [],
@@ -18,18 +18,26 @@ class Scene {
 
     addElement(image) {
         var imageKind = image.constructor.name
-        if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
             imageKind = 'Bullet'
         }
-        log(image)
+        if (imageKind == 'Boss1') {
+            imageKind = 'Boss'
+        }
+        if (imageKind == 'MainBackground') {
+            imageKind = 'Background'
+        }
+
+
+        // log(image)
         this.elements[imageKind].push(image)
     }
 
     getImages(imageKind) {
-        if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
@@ -40,7 +48,7 @@ class Scene {
 
     removeImage(img) {
         var imageKind = img.constructor.name
-        if (imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
@@ -76,54 +84,64 @@ class Scene {
     }
 }
 
-class MainScene extends Scene{
+class StartScene extends Scene{
     constructor(game) {
         super(game)
+        this.bg = new Background(game, this, 'background')
+        this.addElement(this.bg)
+        this.init_listener()
+    }
 
-        this.bg1 = new Background(game, this, 'background')
-        this.bg2 = new Background(game, this, 'background')
+    draw() {
+        this.drawImage()
+        this.drawText()
+    }
+
+    drawImage() {
+        for (var imageKind of Object.keys(this.elements)) {
+            for (var img of this.elements[imageKind]) {
+                this.game.drawImage(img)
+            }
+        }
+    }
+
+    drawText() {
+        var ctx = this.game.context
+        ctx.font = '24px serif'
+        ctx.fillStyle = 'White'
+        ctx.fillText("按s键开始游戏", 50, 70)
+    }
+
+    init_listener() {
+        var g = this.game
+        this.game.register("s", function () {
+            // o.game.start = true
+            g.startMainScene()
+        })
+    }
+}
+
+class MainScene extends Scene{
+    constructor(game) {
+        // log('ms')
+        super(game)
+        this.bg1 = new MainBackground(game, this, 'background')
+        this.bg2 = new MainBackground(game, this, 'background')
         this.bg1.y = 0
         this.bg2.y = -this.bg2.h
-        this.player = new Player(game, this, 'player')
+        this.player = new Player(game, this, 'player', 130, 120, 20, 20)
         this.enemeyTime = 100
         this.timer = 0
         this.hasBoss = false
 
-        // var enemys = []
-        // var y = 0
-        // for (var i = 0; i < 10; i++) {
-        //     var k = getRandomInt(0, 10)
-        //     var isBuff = k == 9 ? true : false
-        //     // var isBuff = true
-        //     var e = new Enemy(game, this, 'enemy', isBuff)
-        //     if (y == 30) {
-        //         y = 0
-        //     }
-        //     e.y = y
-        //     y -= 13
-        //     enemys.push(e)
-        // }
-
         this.addElement(this.bg1)
         this.addElement(this.bg2)
         this.addElement(this.player)
-
-        // this.func(this)
-
-        // for (var i = 0; i < enemys.length; i++) {
-        //     this.addElement(enemys[i])
-        // }
-
-        // this.func(this)
-        // var intervalId = setInterval(this.generateEnemy, 1000, this)
-        // setInterval(clearInterval, 5000, intervalId)
-        // this.generateBoss
-        // setInterval(this.generateBoss, 100, this)
-
         this.init_listener()
     }
 
     update() {
+        // log('main')
         this.timer++
         // log('scene.timer', this.timer)
         for (var imageKind of Object.keys(this.elements)) {
@@ -132,94 +150,132 @@ class MainScene extends Scene{
             }
         }
 
-        // this.test('GeneralEnemy')
+        // this.test1()
+        // this.time(10, 'GeneralEnemy', 200)
 
-        // if (this.hasBoss == false) {
-        //     this.generateBoss(this)
-        //     this.hasBoss = true
-        // }
+        // this.startFirstPass()
+        this.startSecondPass()
 
-        // if (this.timer <= 100) {
-        //     if (this.timer % this.enemeyTime == 0) {
-        //         this.generateEnemy(this)
-        //     }
-        // } else if (this.timer >= 500) {
-        //     if (this.hasBoss == false) {
-        //         this.generateBoss(this)
-        //         this.hasBoss = true
-        //     }
-        // }
-        //
-        // if (this.timer <= 500 && this.timer % 200 == 0) {
-        //     this.generateEnemy1(this)
-        // }
 
+        // if (this.timer == 10) {
+        //     this.time(10, 'ForlornHope', 10)
+        //     this.generateEnemy(this, 'ForlornHope', 40)
+        //     this.generateEnemy(this, 'ForlornHope', 130)
+        //     this.generateEnemy(this, 'ForlornHope', 230)
+        // }
+        // if (this.timer == 15)
+        // if (this.timer == 30) {
+        //     this.generateEnemy(this, 'GeneralEnemy', 60)
+        //     this.generateEnemy(this, 'GeneralEnemy', 180)
+        // }
+        // var e = this.test('GeneralEnemy')
+
+    }
+
+    startFirstPass() {
+        this.time(20, 'ForlornHope', 40)
+        this.time(30, 'ForlornHope', 150)
+        this.time(40, 'ForlornHope', 200)
+        this.time(120, 'GeneralEnemy', 50)
+        this.time(250, 'GeneralEnemy', 180)
+        this.time(350, 'Enemy1', 120)
+        this.time(350, 'ForlornHope', 90)
+        this.time(350, 'ForlornHope', 160)
+        this.time(550, 'Enemy1', 220)
+        this.time(1200, 'Boss1', this.limitX/2)
+    }
+
+    startSecondPass() {
+        this.time(20, 'ForlornHope', 40)
+        this.time(30, 'ForlornHope', 150)
+        this.time(40, 'ForlornHope', 200)
+        this.time(120, 'GeneralEnemy', 50)
+        this.time(250, 'GeneralEnemy', 180)
+        this.time(350, 'Enemy1', 120)
+        this.time(350, 'ForlornHope', 90)
+        this.time(350, 'ForlornHope', 160)
+        this.time(550, 'Enemy1', 220)
+        this.time(1200, 'Boss1', this.limitX/2)
+    }
+
+    test1() {
+        var ySpeed = 3
+        var imgName = 'enemyBullet'
+        var w = 20
+        var h = 20
+        // var x = this.x + this.w / 2 - w / 2
+        // var y = this.y + this.h
+        var r = 10
+        var x1 = 30 + 20 / 2
+        var y1 = 30 + 20 / 2
+        var x = x1 + r*Math.sin(30)
+        var y = y1 + r*Math.cos(30)
+        var target = 'Player'
+        log(x1)
+        // var b = new PlayerBullet(this.game, this.scene, imgName, w, h, x, y, xSpeed, ySpeed, target)
+
+        // var b = new EnemyBullet(this.game, this.scene, 'fireBullet', x, y, 0, this.bulletSpeed)
+        var b1 = new GeneralBullet(this.game, this.scene, imgName, w, h, x, y, ySpeed, target)
+        this.scene.addElement(b1)
+        x = x1 + r*Math.sin(-30)
+        y = y1 + r*Math.con(-30)
+        var b = new GeneralBullet(this.game, this.scene, imgName, w, h, x, y, ySpeed, target)
+        this.scene.addElement(b)
+        log(b)
+    }
+
+    time(time, enemy, x) {
+        if (this.timer == time) {
+            return this.generateEnemy(this, enemy, x)
+        }
     }
 
     test(className) {
-        if (className == 'Enemy1'){
-            if (this.timer >= 50) {
-                if (this.hasBoss == false) {
-                    this.generateEnemy1(this)
-                    this.hasBoss = true
-                }
-            }
+        if (this.hasBoss == false) {
+            var e = this.generateEnemy(this, className)
+            this.hasBoss = true
         }
-        if (className == 'GeneralEnemy'){
-            if (this.timer >= 50) {
-                if (this.hasBoss == false) {
-                    this.generateGeneralEnemy(this)
-                    this.hasBoss = true
-                }
-            }
-        }
+        return e
+
+        // if (className == 'Enemy1'){
+        //     if (this.timer >= 50) {
+        //         if (this.hasBoss == false) {
+        //             this.generateEnemy1(this)
+        //             this.hasBoss = true
+        //         }
+        //     }
+        // }
+        // if (className == 'GeneralEnemy'){
+        //     if (this.timer >= 50) {
+        //         if (this.hasBoss == false) {
+        //             this.generateGeneralEnemy(this)
+        //             this.hasBoss = true
+        //         }
+        //     }
+        // }
 
     }
 
-    generateGeneralEnemy(scene) {
+    generateEnemy(scene, classname, x) {
 
         // log('enemy')
-        var y = -15
+        var y = -20
         var k = getRandomInt(0, 10)
         var isBuff = k == 9 ? true : false
         // var isBuff = true
-        var x1 = getRandomInt(5,135)
-        // var x2 = getRandomInt(150,270)
-        var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
-        // var e2 = new GeneralEnemy(scene.game, scene, 'enemy', x2, y - 15, isBuff)
-
-
+        // var x1 = getRandomInt(5,135)
+        var x1 = x
+        var w = 30
+        var h = 10
+        var isTrace = true
+        var parameter = "scene.game, scene, \'enemy\', x1, y, w, h, isTrace, isBuff"
+        // var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
+        var e1 = eval("new " + classname + "(" + parameter + ")")
+        // log("new " + classname + "(" + parameter + ")")
+        // log(e1)
         scene.addElement(e1)
-        // scene.addElement(e2)
-    }
-
-    generateEnemy(scene) {
-
-        // log('enemy')
-        var y = -15
-        var k = getRandomInt(0, 10)
-        var isBuff = k == 9 ? true : false
-        // var isBuff = true
-        var x1 = getRandomInt(5,135)
-        var x2 = getRandomInt(150,270)
-        var e1 = new Enemy(scene.game, scene, 'enemy', x1, y, isBuff)
-        var e2 = new Enemy(scene.game, scene, 'enemy', x2, y - 15, isBuff)
-
-        scene.addElement(e1)
-        scene.addElement(e2)
-    }
-
-    generateEnemy1(scene) {
-
-        var y = -15
-        var k = getRandomInt(0, 10)
-        var isBuff = k == 9 ? true : false
-        // var isBuff = true
-        var x = getRandomInt(5,270)
-        var e = new Enemy1(scene.game, scene, 'enemy1', x, y, isBuff)
-        // log(e)
-
-        scene.addElement(e)
+        // log(e1)
+        return e1
     }
 
     generateBoss(scene) {
@@ -230,15 +286,8 @@ class MainScene extends Scene{
         // log(scene.elements)
     }
 
-    getDistance(source, target) {
-        var xDelta = (source.x - target.x)
-        var yDelta = (source.y - target.y)
-        var sum = Math.pow(xDelta, 2) + Math.pow(yDelta, 2)
-        return Math.sqrt(sum)
-    }
-
-
     init_listener() {
+        // log(this)
         var p = this.player
         this.game.register("ArrowUp", function () {
                 p.moveUp()
@@ -261,7 +310,4 @@ class MainScene extends Scene{
         })
     }
 
-    displayCoordinate() {
-
-    }
 }

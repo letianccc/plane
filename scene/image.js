@@ -1,4 +1,5 @@
 
+
 maxBuffTime = 400
 
 class MyImage {
@@ -6,16 +7,8 @@ class MyImage {
         this.game = game
         this.scene = scene
         this.rate = 1
-        // log(imgName)
         this.img = game.imageByName(imgName)
-        // this.x = x
-        // this.y = y
-        // // log(this.img)
-        // this.w = this.img.width
-        // this.h = this.img.height
-        // this.w = width
-        // this.h = height
-        // log(height)
+
         this.alive = true
     }
 
