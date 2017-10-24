@@ -18,14 +18,11 @@ class Scene {
 
     addElement(image) {
         var imageKind = image.constructor.name
-        if (imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Boss1' || imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
             imageKind = 'Bullet'
-        }
-        if (imageKind == 'Boss1') {
-            imageKind = 'Boss'
         }
         if (imageKind == 'StartBackground' || imageKind == 'MainBackground') {
             imageKind = 'Background'
@@ -48,7 +45,7 @@ class Scene {
 
     removeImage(img) {
         var imageKind = img.constructor.name
-        if (imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Boss1' || imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
@@ -58,7 +55,6 @@ class Scene {
         var index = images.indexOf(img)
         images.splice(index, 1)
     }
-
 
     update() {
         for (var imageKind of Object.keys(this.elements)) {
@@ -151,11 +147,12 @@ class MainScene extends Scene{
         }
 
         // this.test1()
-        var e = this.time(10, 'Enemy1', 100)
+        var isTrace = true
+        // var e = this.time(10, 'Boss', 150, isTrace)
         // log(e)
         // log(this.elements)
 
-        // this.startFirstPass()
+        this.startFirstPass()
         // this.startSecondPass()
 
 
@@ -175,7 +172,7 @@ class MainScene extends Scene{
     }
 
     startFirstPass() {
-        // log(this.time(20, 'ForlornHope', 40))
+        log(this.time(20, 'ForlornHope', 40))
         this.time(30, 'ForlornHope', 150)
         this.time(40, 'ForlornHope', 200)
         this.time(120, 'GeneralEnemy', 50)
@@ -184,7 +181,7 @@ class MainScene extends Scene{
         this.time(350, 'ForlornHope', 90)
         this.time(350, 'ForlornHope', 160)
         this.time(550, 'Enemy1', 220)
-        // this.time(1200, 'Boss1', this.limitX/2)
+        this.time(1200, 'Boss1', this.limitX/2)
     }
 
     startSecondPass() {
@@ -226,9 +223,9 @@ class MainScene extends Scene{
         log(b)
     }
 
-    time(time, enemy, x) {
+    time(time, enemy, x, isTrace) {
         if (this.timer == time) {
-            return this.generateEnemy(this, enemy, x)
+            return this.generateEnemy(this, enemy, x, isTrace)
         }
     }
 
@@ -258,7 +255,7 @@ class MainScene extends Scene{
 
     }
 
-    generateEnemy(scene, classname, x) {
+    generateEnemy(scene, classname, x, isTrace=false) {
 
         // log('enemy')
         var y = -20
@@ -269,14 +266,13 @@ class MainScene extends Scene{
         var x1 = x
         // var w = 30
         // var h = 10
-        var isTrace = false
         var parameter = "scene.game, scene, \'enemy\', x1, y, isTrace"
         // var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
         var e1 = eval("new " + classname + "(" + parameter + ")")
         // log("new " + classname + "(" + parameter + ")")
         // log(e1)
         scene.addElement(e1)
-        log(e1)
+        // log(e1)
         return e1
     }
 
