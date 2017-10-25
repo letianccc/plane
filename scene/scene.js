@@ -126,6 +126,8 @@ class MainScene extends Scene{
         this.bg1.y = 0
         this.bg2.y = -this.bg2.h
         this.player = new Player(game, this, 'player', 130, 120, 20, 20)
+
+        log(this.player)
         this.enemeyTime = 100
         this.timer = 0
         this.hasBoss = false
@@ -148,11 +150,11 @@ class MainScene extends Scene{
 
         // this.test1()
         var isTrace = true
-        // var e = this.time(10, 'Boss', 150, isTrace)
+        var e = this.time(10, 'Boss1', this.limitX/2, isTrace)
         // log(e)
         // log(this.elements)
 
-        this.startFirstPass()
+        // this.startFirstPass()
         // this.startSecondPass()
 
 
@@ -172,7 +174,7 @@ class MainScene extends Scene{
     }
 
     startFirstPass() {
-        log(this.time(20, 'ForlornHope', 40))
+        this.time(20, 'ForlornHope', 40)
         this.time(30, 'ForlornHope', 150)
         this.time(40, 'ForlornHope', 200)
         this.time(120, 'GeneralEnemy', 50)
@@ -181,7 +183,8 @@ class MainScene extends Scene{
         this.time(350, 'ForlornHope', 90)
         this.time(350, 'ForlornHope', 160)
         this.time(550, 'Enemy1', 220)
-        this.time(1200, 'Boss1', this.limitX/2)
+        this.time(900, 'Boss1', this.limitX/2)
+
     }
 
     startSecondPass() {
@@ -255,7 +258,7 @@ class MainScene extends Scene{
 
     }
 
-    generateEnemy(scene, classname, x, isTrace=false) {
+    generateEnemy(scene, classname, x, isTrace=true) {
 
         // log('enemy')
         var y = -20
