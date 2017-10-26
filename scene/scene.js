@@ -3,14 +3,13 @@
 class Scene {
     constructor(game) {
         this.game = game
-        this.limitX = 280
-        this.limitY = 150
+        this.limitX = 500
+        this.limitY = 500
         this.elements = {
             'Background': [],
-            'Bullet': [],
             'Player': [],
             'Enemy': [],
-            'Boss': [],
+            'Bullet': [],
             'Spark': [],
             'Buff': [],
         }
@@ -105,7 +104,7 @@ class StartScene extends Scene{
         var ctx = this.game.context
         ctx.font = '24px serif'
         ctx.fillStyle = 'White'
-        ctx.fillText("按s键开始游戏", 50, 70)
+        ctx.fillText("按s键开始游戏", this.limitX/2-80, this.limitY/2)
     }
 
     init_listener() {
@@ -125,12 +124,14 @@ class MainScene extends Scene{
         this.bg2 = new MainBackground(game, this, 'background')
         this.bg1.y = 0
         this.bg2.y = -this.bg2.h
-        this.player = new Player(game, this, 'player', 130, 120, 20, 20)
+        this.player = new Player(game, this)
 
-        log(this.player)
+        // log(this.player)
         this.enemeyTime = 100
         this.timer = 0
         this.hasBoss = false
+
+        this.registerEnemys = this.registerEnemysForFirstPass()
 
         this.addElement(this.bg1)
         this.addElement(this.bg2)
@@ -139,9 +140,14 @@ class MainScene extends Scene{
     }
 
     update() {
-        // log('main')
         this.timer++
-        // log('scene.timer', this.timer)
+
+        if (this.boss.lives == 0) {
+            this.registerEnemys = this.registerEnemysForSecondPass()
+        }
+
+        this.addEnemy()
+
         for (var imageKind of Object.keys(this.elements)) {
             for (var img of this.elements[imageKind]) {
                 img.update()
@@ -149,8 +155,8 @@ class MainScene extends Scene{
         }
 
         // this.test1()
-        var isTrace = true
-        var e = this.time(10, 'Boss1', this.limitX/2, isTrace)
+        // var isTrace = true
+        // var e = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
         // log(e)
         // log(this.elements)
 
@@ -173,31 +179,99 @@ class MainScene extends Scene{
 
     }
 
+    addEnemy() {
+        log(this.registerEnemys)
+        if (Object.keys(this.registerEnemys).length > 0) {
+            var enemys = []
+            for (var e of this.registerEnemys) {
+                var time = this.registerEnemys[e]
+                if (this.timer == time) {
+                    enemys.push(e)
+                }
+            }
+
+            for (var e of enemys) {
+                this.addElement(e)
+            }
+            // 删除已注册的敌人的记录
+            for (var e of enemys) {
+                delete this.registerEnemys[e]
+            }
+        }
+    }
+
+    registerEnemysForFirstPass() {
+        var isTrace = false
+        var enemys = [
+                    this.generateEnemy('ForlornHope', 20, isTrace),
+                    this.generateEnemy('ForlornHope', 200, isTrace),
+                    this.generateEnemy('ForlornHope', 300, isTrace),
+                    this.generateEnemy('GeneralEnemy', 20, isTrace),
+                    this.generateEnemy('GeneralEnemy', 350, isTrace),
+                    this.generateEnemy('ForlornHope', 150, isTrace),
+                    this.generateEnemy('ForlornHope', 250, isTrace),
+                    this.generateEnemy('Enemy1', 200, isTrace),
+                    this.generateEnemy('Enemy1', 30, isTrace),
+                    this.generateEnemy('Boss1', this.limitX/2-60, isTrace),
+                ]
+        var times = [20, 30, 40, 120, 250, 350, 350, 400, 550, 900]
+        var registerEnemys = {}
+        for (var i = 0; i < times.length; i++) {
+            var e = enemys[i]
+            var t = times[i]
+            registerEnemys[e] = t
+            log(registerEnemys)
+        }
+        this.boss = enemys[enemys.length - 1]
+        log(registerEnemys)
+        return registerEnemys
+    }
+
+    registerEnemysForSecondPass() {}
+
     startFirstPass() {
-        this.time(20, 'ForlornHope', 40)
-        this.time(30, 'ForlornHope', 150)
-        this.time(40, 'ForlornHope', 200)
-        this.time(120, 'GeneralEnemy', 50)
-        this.time(250, 'GeneralEnemy', 180)
-        this.time(350, 'Enemy1', 120)
-        this.time(350, 'ForlornHope', 90)
-        this.time(350, 'ForlornHope', 160)
-        this.time(550, 'Enemy1', 220)
-        this.time(900, 'Boss1', this.limitX/2)
+        var isTrace = false
+        // this.time(20, 'ForlornHope', 20, isTrace)
+        // this.time(30, 'ForlornHope', 200, isTrace)
+        // this.time(40, 'ForlornHope', 300, isTrace)
+        // this.time(120, 'GeneralEnemy', 20, isTrace)
+        // this.time(250, 'GeneralEnemy', 350, isTrace)
+        // this.time(350, 'ForlornHope', 150, isTrace)
+        // this.time(350, 'ForlornHope', 250, isTrace)
+        // this.time(400, 'Enemy1', 200, isTrace)
+        // this.time(550, 'Enemy1', 30, isTrace)
+
+        // var boss = this.time(900, 'Boss1', this.limitX/2-60, isTrace)
+        // log(boss)
+        // if (this.timer > 900 && boss.lives == 0) {
+        //
+        //     // this.startSecondPass(this.timer+200)
+        // }
+        if (this.timer == 10) {
+            this.boss = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
+        }
+        if (this.timer > 110) {
+            log(this.boss)
+            if (this.boss.lives == 0) {
+                this.startSecondPass(this.timer+200)
+            }
+        }
 
     }
 
-    startSecondPass() {
-        this.time(20, 'ForlornHope', 40)
-        this.time(30, 'ForlornHope', 150)
-        this.time(40, 'ForlornHope', 200)
-        this.time(120, 'GeneralEnemy', 50)
-        this.time(250, 'GeneralEnemy', 180)
-        this.time(350, 'Enemy1', 120)
-        this.time(350, 'ForlornHope', 90)
-        this.time(350, 'ForlornHope', 160)
-        this.time(550, 'Enemy1', 220)
-        this.time(1200, 'Boss1', this.limitX/2)
+    startSecondPass(timer) {
+        var isTrace = true
+        log('second')
+        this.time(timer+20, 'ForlornHope', 40, isTrace)
+        this.time(timer+30, 'ForlornHope', 150, isTrace)
+        this.time(timer+40, 'ForlornHope', 200, isTrace)
+        this.time(timer+120, 'GeneralEnemy', 50, isTrace)
+        this.time(timer+250, 'GeneralEnemy', 180, isTrace)
+        this.time(timer+350, 'Enemy1', 120, isTrace)
+        this.time(timer+350, 'ForlornHope', 90, isTrace)
+        this.time(timer+350, 'ForlornHope', 160, isTrace)
+        this.time(timer+550, 'Enemy1', 220, isTrace)
+        this.time(timer+1200, 'Boss1', this.limitX/2, isTrace)
     }
 
     test1() {
@@ -228,9 +302,11 @@ class MainScene extends Scene{
 
     time(time, enemy, x, isTrace) {
         if (this.timer == time) {
-            return this.generateEnemy(this, enemy, x, isTrace)
+            return this.generateEnemy(enemy, x, isTrace)
         }
     }
+
+
 
     test(className) {
         if (this.hasBoss == false) {
@@ -258,7 +334,7 @@ class MainScene extends Scene{
 
     }
 
-    generateEnemy(scene, classname, x, isTrace=true) {
+    generateEnemy(classname, x, isTrace=true) {
 
         // log('enemy')
         var y = -20
@@ -269,12 +345,12 @@ class MainScene extends Scene{
         var x1 = x
         // var w = 30
         // var h = 10
-        var parameter = "scene.game, scene, \'enemy\', x1, y, isTrace"
+        var parameter = "this.game, this, \'enemy\', x1, y, isTrace"
         // var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
         var e1 = eval("new " + classname + "(" + parameter + ")")
         // log("new " + classname + "(" + parameter + ")")
         // log(e1)
-        scene.addElement(e1)
+        // this.addElement(e1)
         // log(e1)
         return e1
     }

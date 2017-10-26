@@ -26,14 +26,14 @@ class Plane extends MyImage {
 }
 
 class Player extends Plane {
-    constructor(game, scene, imgName, x, y) {
-        super(game, scene, imgName, x, y)
-        this.w = 20
-        this.h = 20
-        this.speed = 15
+    constructor(game, scene, imgName) {
+        super(game, scene, 'player', 225, 450)
+        this.w = 50
+        this.h = 50
+        this.speed = 25
         this.buffAmount = 0
 
-        this.bulletSpeed = 15
+        this.bulletSpeed = 40
         this.bulletCooling = 2
         this.bulletImageName = 'fireBullet'
 
@@ -50,7 +50,7 @@ class Player extends Plane {
     }
 
     launch() {
-        log('launch')
+        // log('launch')
         var bulletDatas = this.bulletDatas()
         for (var b of bulletDatas) {
             var b = new PlayerBullet(this.game, this.scene, this.bulletImageName, b.x, b.y, b.xSpeed, b.ySpeed)
@@ -133,6 +133,7 @@ class Player extends Plane {
     }
 
     update() {
+        log(this.x, this.y)
         this.updateTimer()
         // this.updateState()
     }
@@ -159,18 +160,18 @@ class Player extends Plane {
         }
     }
     moveRight() {
-        if (this.x < 280) {
+        if (this.x < 450) {
 
             this.x += this.speed
         }
     }
     moveUp() {
-        if (this.y > 2) {
+        if (this.y > 0) {
             this.y -= this.speed
         }
     }
     moveDown() {
-        if (this.y < 130) {
+        if (this.y < 450) {
             this.y += this.speed
         }
     }
@@ -264,13 +265,18 @@ class Subordinate extends Enemy {
 class ForlornHope extends Subordinate {
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
-        this.w = 20
-        this.h = 20
-        this.ySpeed = 10
+        this.w = 80
+        this.h = 50
         this.stopTime = 12
-        this.attackSpeed = 15
+        this.attackSpeed = 25
         this.leaveTime = this.getLeaveTime()
         this.lives = 5
+
+        // debug
+        this.attackTime = 60
+        // 追踪
+        this.ySpeed = 20
+
     }
 
     getLeaveTime() {
@@ -320,7 +326,7 @@ class Fighter extends Subordinate {
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
         this.stopTime = 30
-        this.bulletSpeed = 4
+        this.bulletSpeed = 10
         this.ySpeed = 1
 
         this.bulletCooling = 60
@@ -418,8 +424,8 @@ class Fighter extends Subordinate {
 class GeneralEnemy extends Fighter {
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
-        this.w = 20
-        this.h = 20
+        this.w = 120
+        this.h = 60
         this.lives = 10
         // bullet
         this.bulletCount = 1
@@ -430,8 +436,8 @@ class GeneralEnemy extends Fighter {
 class Enemy1 extends Fighter {
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
-        this.w = 20
-        this.h = 20
+        this.w = 120
+        this.h = 60
         this.lives = 20
         this.bulletImageName = 'fireBullet'
         this.bulletCount = 3
@@ -441,8 +447,8 @@ class Enemy1 extends Fighter {
 class Enemy2 extends Fighter {
     constructor(game, scene, imgName, x, y, isTrace=true) {
         super(game, scene, imgName, x, y, true)
-        this.w = 20
-        this.h = 20
+        this.w = 60
+        this.h = 60
         this.ySpeed = 0.3
 
         this.bulletImageName = 'fireBullet'
@@ -482,8 +488,8 @@ class Enemy2 extends Fighter {
 class Boss1 extends Enemy{
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
-        this.w = 40
-        this.h = 30
+        this.w = 150
+        this.h = 150
         this.ySpeed = 1
 
         this.bulletCount = 15
@@ -492,10 +498,10 @@ class Boss1 extends Enemy{
         this.lives = 100
         this.bulletImageName = 'fireBullet'
         this.stopTime = 50
-        this.bulletSpeed = 5
+        this.bulletSpeed = 15
 
         // 覆盖
-        this.attackTime = 70
+        this.attackTime = 80
 
         //debug
         this.isTrace = false
@@ -570,7 +576,7 @@ class Boss1 extends Enemy{
     }
 
     bulletDatas() {
-        var radius = 20
+        var radius = 60
         var stepLength = 30 * Math.PI / 180
         var middle = this.middleRadian()
         var count = Math.floor(this.bulletCount / 2)
@@ -608,8 +614,8 @@ class Boss1 extends Enemy{
 class Boss2 extends Enemy{
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
-        this.w = 40
-        this.h = 30
+        this.w = 80
+        this.h = 80
         this.ySpeed = 1
 
         this.bulletCount = 15
@@ -789,8 +795,8 @@ class PlayerBullet extends Bullet {
     constructor(game, scene, bulletImageName, x, y, xSpeed, ySpeed) {
         super(game, scene, bulletImageName, xSpeed, ySpeed)
         this.target = 'Enemy'
-        this.w = 5
-        this.h = 5
+        this.w = 15
+        this.h = 15
         this.x = x - this.w / 2
         this.y = y - this.h / 2
     }
@@ -821,8 +827,8 @@ class EnemyBullet extends Bullet {
     constructor(game, scene, imgName, x, y, xSpeed, ySpeed) {
         super(game, scene, imgName, xSpeed, ySpeed)
         this.target = 'Player'
-        this.w = 5
-        this.h = 5
+        this.w = 15
+        this.h = 15
         this.x = x - this.w / 2
         this.y = y - this.h / 2
     }
@@ -967,8 +973,8 @@ class Background extends MyImage {
         super(game, scene, imgName)
         this.x = 0
         this.y = 0
-        this.w = 400
-        this.h = 300
+        this.w = 600
+        this.h = 600
     }
 
     update() {}
@@ -994,14 +1000,14 @@ class MainBackground extends Background {
         }
     }
 }
-
+// spark 图形需要改变
 class Spark extends MyImage{
     constructor(game, scene, x, y) {
         super(game, scene, 'spark')
         this.x = x
         this.y = y
-        this.w = 2
-        this.h = 2
+        this.w = 10
+        this.h = 10
         this.xDirection = getRandomInt(0, 1) == 0 ? -1 : 1
         this.yDirection = getRandomInt(0, 1) == 0 ? -1 : 1
         this.xSpeed = this.xDirection * getRandom(0, 1)

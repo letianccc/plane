@@ -62,9 +62,9 @@ class Game{
         window.addEventListener('keyup', function(event){
             g.keydowns[event.key] = false
         })
-        // window.addEventListener('click', function(event){
-        //     // log(event.screenX, event.screenY)
-        // })
+        window.addEventListener('click', function(event){
+            log(event.screenX, event.screenY)
+        })
     }
 
     loadImage(images) {
