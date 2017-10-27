@@ -1,5 +1,6 @@
 
 
+
 maxBuffTime = 400
 
 class MyImage {
@@ -133,7 +134,7 @@ class Player extends Plane {
     }
 
     update() {
-        log(this.x, this.y)
+        // log(this.x, this.y)
         this.updateTimer()
         // this.updateState()
     }
@@ -322,6 +323,7 @@ class ForlornHope extends Subordinate {
 
 }
 
+
 class Fighter extends Subordinate {
     constructor(game, scene, imgName, x, y, isTrace) {
         super(game, scene, imgName, x, y, isTrace)
@@ -495,7 +497,7 @@ class Boss1 extends Enemy{
         this.bulletCount = 15
         // this.maxBulletCooling = 80
         this.bulletCooling = 80
-        this.lives = 100
+        this.lives = 10
         this.bulletImageName = 'fireBullet'
         this.stopTime = 50
         this.bulletSpeed = 15

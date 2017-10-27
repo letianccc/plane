@@ -63,7 +63,7 @@ class Game{
             g.keydowns[event.key] = false
         })
         window.addEventListener('click', function(event){
-            log(event.screenX, event.screenY)
+            // log(event.screenX, event.screenY)
         })
     }
 
