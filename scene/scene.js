@@ -132,7 +132,10 @@ class MainScene extends Scene{
         this.timer = 0
         this.hasBoss = false
 
-        this.registerEnemys = this.registerEnemysForFirstPass()
+        this.registerEnemys = this.test()
+        // this.startFirstPass()
+        // this.test()
+
         // this.toAddEnemys =
 
         this.addElement(this.bg1)
@@ -146,10 +149,11 @@ class MainScene extends Scene{
 
         if (this.boss.lives == 0) {
             // log("second")
-            this.isLastPass = true
             // if (!this.isLastPass) {
-            //     this.registerEnemys = this.registerEnemysForSecondPass(this.timer)
+            ////     this.registerEnemys = this.registerEnemysForSecondPass(this.timer)
+            //      this.startSecondPass(this.timer)
             // }
+            this.isLastPass = true
         }
 
         this.addEnemy()
@@ -215,6 +219,26 @@ class MainScene extends Scene{
         }
     }
 
+    test() {
+        var isTrace = false
+        var enemys = [
+                    this.generateEnemy('Boss1', this.limitX/2-60, isTrace),
+                ]
+        var times = [20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        // for (var i = 0; i < times.length; i++) {
+        //     var e = enemys[i]
+        //     var t = times[i]
+        //     registerEnemys.push({e: t})
+        // }
+        this.boss = enemys[enemys.length - 1]
+        // log(registerEnemys)
+        return registerEnemys
+    }
+
     registerEnemysForFirstPass() {
         var isTrace = false
         var enemys = [
@@ -273,54 +297,46 @@ class MainScene extends Scene{
         return registerEnemys
     }
 
+    // startFirstPass() {
+    //     var isTrace = false
+    //     // this.time(20, 'ForlornHope', 20, isTrace)
+    //     // this.time(30, 'ForlornHope', 200, isTrace)
+    //     // this.time(40, 'ForlornHope', 300, isTrace)
+    //     // this.time(120, 'GeneralEnemy', 20, isTrace)
+    //     // this.time(250, 'GeneralEnemy', 350, isTrace)
+    //     // this.time(350, 'ForlornHope', 150, isTrace)
+    //     // this.time(350, 'ForlornHope', 250, isTrace)
+    //     // this.time(400, 'Enemy1', 200, isTrace)
+    //     // this.time(550, 'Enemy1', 30, isTrace)
+    //
+    //     // var boss = this.time(900, 'Boss1', this.limitX/2-60, isTrace)
+    //     // log(boss)
+    //     // if (this.timer > 900 && boss.lives == 0) {
+    //     //
+    //     //     // this.startSecondPass(this.timer+200)
+    //     // }
+    //
+    //     if (this.timer == 10) {
+    //         this.boss = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
+    //     }
+    //     // log(this.boss)
+    //     // if (this.timer == 10) {
+    //     //     this.boss = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
+    //     // }
+    //     // if (this.timer > 110) {
+    //     //     log(this.boss)
+    //     //     if (this.boss.lives == 0) {
+    //     //         this.startSecondPass(this.timer+200)
+    //     //     }
+    //     // }
+    //
+    // }
     startFirstPass() {
-        var isTrace = false
-        // this.time(20, 'ForlornHope', 20, isTrace)
-        // this.time(30, 'ForlornHope', 200, isTrace)
-        // this.time(40, 'ForlornHope', 300, isTrace)
-        // this.time(120, 'GeneralEnemy', 20, isTrace)
-        // this.time(250, 'GeneralEnemy', 350, isTrace)
-        // this.time(350, 'ForlornHope', 150, isTrace)
-        // this.time(350, 'ForlornHope', 250, isTrace)
-        // this.time(400, 'Enemy1', 200, isTrace)
-        // this.time(550, 'Enemy1', 30, isTrace)
-
-        // var boss = this.time(900, 'Boss1', this.limitX/2-60, isTrace)
-        // log(boss)
-        // if (this.timer > 900 && boss.lives == 0) {
-        //
-        //     // this.startSecondPass(this.timer+200)
-        // }
-
-        if (this.timer == 10) {
-            this.boss = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
-        }
-        // log(this.boss)
-        // if (this.timer == 10) {
-        //     this.boss = this.time(10, 'Boss1', this.limitX/2-60, isTrace)
-        // }
-        // if (this.timer > 110) {
-        //     log(this.boss)
-        //     if (this.boss.lives == 0) {
-        //         this.startSecondPass(this.timer+200)
-        //     }
-        // }
-
+        this.registerEnemys = this.registerEnemysForFirstPass()
     }
 
     startSecondPass(timer) {
-        var isTrace = true
-        log('second')
-        this.time(timer+20, 'ForlornHope', 40, isTrace)
-        this.time(timer+30, 'ForlornHope', 150, isTrace)
-        this.time(timer+40, 'ForlornHope', 200, isTrace)
-        this.time(timer+120, 'GeneralEnemy', 50, isTrace)
-        this.time(timer+250, 'GeneralEnemy', 180, isTrace)
-        this.time(timer+350, 'Enemy1', 120, isTrace)
-        this.time(timer+350, 'ForlornHope', 90, isTrace)
-        this.time(timer+350, 'ForlornHope', 160, isTrace)
-        this.time(timer+550, 'Enemy1', 220, isTrace)
-        this.time(timer+1200, 'Boss1', this.limitX/2, isTrace)
+        this.registerEnemys = this.registerEnemysForSecondPass(timer)
     }
 
     test1() {
@@ -357,31 +373,31 @@ class MainScene extends Scene{
 
 
 
-    test(className) {
-        if (this.hasBoss == false) {
-            var e = this.generateEnemy(this, className)
-            this.hasBoss = true
-        }
-        return e
-
-        // if (className == 'Enemy1'){
-        //     if (this.timer >= 50) {
-        //         if (this.hasBoss == false) {
-        //             this.generateEnemy1(this)
-        //             this.hasBoss = true
-        //         }
-        //     }
-        // }
-        // if (className == 'GeneralEnemy'){
-        //     if (this.timer >= 50) {
-        //         if (this.hasBoss == false) {
-        //             this.generateGeneralEnemy(this)
-        //             this.hasBoss = true
-        //         }
-        //     }
-        // }
-
-    }
+    // test(className) {
+    //     if (this.hasBoss == false) {
+    //         var e = this.generateEnemy(this, className)
+    //         this.hasBoss = true
+    //     }
+    //     return e
+    //
+    //     // if (className == 'Enemy1'){
+    //     //     if (this.timer >= 50) {
+    //     //         if (this.hasBoss == false) {
+    //     //             this.generateEnemy1(this)
+    //     //             this.hasBoss = true
+    //     //         }
+    //     //     }
+    //     // }
+    //     // if (className == 'GeneralEnemy'){
+    //     //     if (this.timer >= 50) {
+    //     //         if (this.hasBoss == false) {
+    //     //             this.generateGeneralEnemy(this)
+    //     //             this.hasBoss = true
+    //     //         }
+    //     //     }
+    //     // }
+    //
+    // }
 
     generateEnemy(classname, x, isTrace=true) {
 

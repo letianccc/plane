@@ -255,7 +255,7 @@ class Subordinate extends Enemy {
     }
 
     checkOutOfRange() {
-        if (this.y < -30) {
+        if (this.y < -100) {
             this.disappear()
         }
     }
@@ -497,7 +497,7 @@ class Boss1 extends Enemy{
         this.bulletCount = 15
         // this.maxBulletCooling = 80
         this.bulletCooling = 80
-        this.lives = 10
+        this.lives = 1000
         this.bulletImageName = 'fireBullet'
         this.stopTime = 50
         this.bulletSpeed = 15
@@ -1005,7 +1005,7 @@ class MainBackground extends Background {
 // spark 图形需要改变
 class Spark extends MyImage{
     constructor(game, scene, x, y) {
-        super(game, scene, 'spark')
+        super(game, scene, 'fireBullet')
         this.x = x
         this.y = y
         this.w = 10
@@ -1015,7 +1015,7 @@ class Spark extends MyImage{
         this.xSpeed = this.xDirection * getRandom(0, 1)
         this.ySpeed = this.yDirection * getRandom(0, 1)
 
-        this.alive = 4
+        this.alive = 10
     }
 
     update() {
