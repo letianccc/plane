@@ -132,7 +132,7 @@ class MainScene extends Scene{
         this.timer = 0
         this.hasBoss = false
 
-        this.registerEnemys = this.test()
+        this.registerEnemys = this.registerEnemysForFirstPass()
         // this.startFirstPass()
         // this.test()
 
@@ -398,6 +398,279 @@ class MainScene extends Scene{
     //     // }
     //
     // }
+
+    generateEnemy(classname, x, isTrace=true) {
+
+        // log('enemy')
+        var y = -20
+        // var k = getRandomInt(0, 10)
+        // var isBuff = k == 9 ? true : false
+        // var isBuff = true
+        // var x1 = getRandomInt(5,135)
+        var x1 = x
+        // var w = 30
+        // var h = 10
+        var parameter = "this.game, this, \'enemy\', x1, y, isTrace"
+        // var e1 = new GeneralEnemy(scene.game, scene, 'enemy', x1, y, isBuff)
+        var e1 = eval("new " + classname + "(" + parameter + ")")
+        // log("new " + classname + "(" + parameter + ")")
+        // log(e1)
+        // this.addElement(e1)
+        // log(e1)
+        return e1
+    }
+
+    generateBoss(scene) {
+        // log('boss')
+        scene.boss = new Boss(scene.game, scene, 'boss', 150, 1)
+        // log(scene.boss)
+        scene.addElement(scene.boss)
+        // log(scene.elements)
+    }
+
+    init_listener() {
+        // log(this)
+        var p = this.player
+        this.game.register("ArrowUp", function () {
+                p.moveUp()
+
+        })
+        this.game.register("ArrowDown", function () {
+
+                p.moveDown()
+
+        })
+        this.game.register("ArrowLeft", function () {
+                p.moveLeft()
+        })
+        this.game.register("ArrowRight", function () {
+                p.moveRight()
+
+        })
+        this.game.register("f", function () {
+            p.attack()
+        })
+    }
+
+}
+
+class TestScene extends Scene{
+    constructor(game) {
+        // log('ms')
+        super(game)
+        this.bg1 = new MainBackground(game, this, 'background')
+        this.bg2 = new MainBackground(game, this, 'background')
+        this.bg1.y = 0
+        this.bg2.y = -this.bg2.h
+        this.player = new Player(game, this)
+        this.isLastPass = false
+
+        // log(this.player)
+        this.enemeyTime = 100
+        this.timer = 0
+        this.hasBoss = false
+
+        this.registerEnemys = this.getEnemys(false)
+        // this.startFirstPass()
+        // this.test()
+
+        // this.toAddEnemys =
+
+        this.addElement(this.bg1)
+        this.addElement(this.bg2)
+        this.addElement(this.player)
+        this.init_listener()
+    }
+
+    update() {
+        this.timer++
+
+        // if (this.boss.lives == 0) {
+        //     // log("second")
+        //     // if (!this.isLastPass) {
+        //     ////     this.registerEnemys = this.registerEnemysForSecondPass(this.timer)
+        //     //      this.startSecondPass(this.timer)
+        //     // }
+        //     this.isLastPass = true
+        // }
+
+        this.addEnemy()
+
+        for (var imageKind of Object.keys(this.elements)) {
+            for (var img of this.elements[imageKind]) {
+                img.update()
+            }
+        }
+
+
+    }
+
+    addEnemy() {
+        if (this.registerEnemys['enemys'].length > 0) {
+            var times = this.registerEnemys['times']
+            var enemys = this.registerEnemys['enemys']
+            var count = 0
+
+            // 计时器到指定时间，找出对应的敌人索引
+            for (var i = 0; i < times.length; i++) {
+                if (this.timer == times[i]) {
+                    count++
+                } else {
+                    break
+                }
+            }
+
+            for (var i = 0; i < count; i++) {
+                this.addElement(enemys[i])
+            }
+
+            for (var i = 0; i < count; i++) {
+                enemys.splice(0, 1)
+                times.splice(0, 1)
+            }
+        }
+    }
+
+    test() {
+        var isTrace = false
+        var enemys = [
+                    this.generateEnemy('Boss1', this.limitX/2-60, isTrace),
+                ]
+        var times = [20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        // for (var i = 0; i < times.length; i++) {
+        //     var e = enemys[i]
+        //     var t = times[i]
+        //     registerEnemys.push({e: t})
+        // }
+        this.boss = enemys[enemys.length - 1]
+        // log(registerEnemys)
+        return registerEnemys
+    }
+
+    getEnemys(isTrace) {
+        var e1 = this.generateEnemy('Enemy1', 200, isTrace)
+        var e2 = this.generateEnemy('ForlornHope', 200, isTrace)
+        var enemys = [e1, e2]
+        var times = [20, 20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    getEnemy1(isTrace) {
+        var e = this.generateEnemy('Enemy1', 200, isTrace)
+        var enemys = [e]
+        var times = [20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    getEnemy2(isTrace) {
+        var e = this.generateEnemy('Enemy2', 200, isTrace)
+        var enemys = [e]
+        var times = [20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    getForlornHope(isTrace) {
+        var e = this.generateEnemy('ForlornHope', 200, isTrace)
+        var enemys = [e]
+        var times = [20]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    registerEnemysForFirstPass() {
+        var isTrace = false
+        var enemys = [
+                    this.generateEnemy('ForlornHope', 20, isTrace),
+                    this.generateEnemy('ForlornHope', 200, isTrace),
+                    this.generateEnemy('ForlornHope', 300, isTrace),
+                    this.generateEnemy('GeneralEnemy', 20, isTrace),
+                    this.generateEnemy('GeneralEnemy', 350, isTrace),
+                    this.generateEnemy('ForlornHope', 150, isTrace),
+                    this.generateEnemy('ForlornHope', 250, isTrace),
+                    this.generateEnemy('Enemy1', 200, isTrace),
+                    this.generateEnemy('Enemy1', 30, isTrace),
+                    this.generateEnemy('Boss1', this.limitX/2-60, isTrace),
+                ]
+        var times = [20, 30, 40, 120, 250, 350, 350, 400, 550, 900]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        // for (var i = 0; i < times.length; i++) {
+        //     var e = enemys[i]
+        //     var t = times[i]
+        //     registerEnemys.push({e: t})
+        // }
+        this.boss = enemys[enemys.length - 1]
+        // log(registerEnemys)
+        return registerEnemys
+    }
+
+    registerEnemysForSecondPass(timer) {
+        var isTrace = true
+        var enemys = [
+                    this.generateEnemy('ForlornHope', 20, isTrace),
+                    this.generateEnemy('ForlornHope', 200, isTrace),
+                    this.generateEnemy('ForlornHope', 300, isTrace),
+                    this.generateEnemy('GeneralEnemy', 20, isTrace),
+                    this.generateEnemy('GeneralEnemy', 350, isTrace),
+                    this.generateEnemy('ForlornHope', 150, isTrace),
+                    this.generateEnemy('ForlornHope', 250, isTrace),
+                    this.generateEnemy('Enemy1', 200, isTrace),
+                    this.generateEnemy('Enemy1', 30, isTrace),
+                    this.generateEnemy('Boss1', this.limitX/2-60, isTrace),
+                ]
+        var times = [timer+20, timer+30, timer+40, timer+120, timer+250, timer+350, timer+350, timer+400, timer+550, timer+900]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        // for (var i = 0; i < times.length; i++) {
+        //     var e = enemys[i]
+        //     var t = times[i]
+        //     registerEnemys.push({e: t})
+        // }
+        this.boss = enemys[enemys.length - 1]
+        // log(registerEnemys)
+        return registerEnemys
+    }
+
+    startFirstPass() {
+        this.registerEnemys = this.registerEnemysForFirstPass()
+    }
+
+    startSecondPass(timer) {
+        this.registerEnemys = this.registerEnemysForSecondPass(timer)
+    }
+
+
+    time(time, enemy, x, isTrace) {
+        if (this.timer == time) {
+            return this.generateEnemy(enemy, x, isTrace)
+        }
+    }
+
+
+
 
     generateEnemy(classname, x, isTrace=true) {
 

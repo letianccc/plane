@@ -15,12 +15,24 @@ class Game{
     }
 
     startMainScene() {
+        this.clearActions()
         this.scene = new MainScene(this)
-        this.clearStartScene()
+    }
+
+    startEndScene() {
+        this.clearActions()
+        this.scene = new StartScene(this)
     }
 
     clearStartScene() {
         delete this.actions['s']
+    }
+
+    clearActions() {
+        var keys = Object.keys(this.actions)
+        for (var k of keys) {
+            delete this.actions[k]
+        }
     }
 
     imageByName(imageName) {
