@@ -1,5 +1,5 @@
 
-
+// log('image')
 rate = 10
 maxBuffTime = 400
 

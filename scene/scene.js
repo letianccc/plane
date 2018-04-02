@@ -17,7 +17,7 @@ class Scene {
 
     addElement(image) {
         var imageKind = image.constructor.name
-        if (imageKind == 'Boss1' || imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
+        if (imageKind == 'Boss2' || imageKind == 'Boss1' || imageKind == 'Enemy2' || imageKind == 'ForlornHope' || imageKind == 'GeneralEnemy' || imageKind == 'Boss' || imageKind == 'Enemy' || imageKind == 'Enemy1') {
             imageKind = 'Enemy'
         }
         if (imageKind == 'PlayerBullet' || imageKind == 'GeneralBullet' || imageKind == 'EnemyBullet' || imageKind == 'Bullet') {
@@ -470,7 +470,7 @@ class TestScene extends Scene{
         this.timer = 0
         this.hasBoss = false
 
-        this.registerEnemys = this.getEnemys(false)
+        this.registerEnemys = this.getEnemys(true)
         // this.startFirstPass()
         // this.test()
 
@@ -512,7 +512,7 @@ class TestScene extends Scene{
             var count = 0
 
             // 计时器到指定时间，找出对应的敌人索引
-            for (var i = 0; i < times.length; i++) {
+            for (var i = 0; i < enemys.length; i++) {
                 if (this.timer == times[i]) {
                     count++
                 } else {
@@ -552,10 +552,50 @@ class TestScene extends Scene{
     }
 
     getEnemys(isTrace) {
-        var e1 = this.generateEnemy('Enemy1', 200, isTrace)
-        var e2 = this.generateEnemy('ForlornHope', 200, isTrace)
-        var enemys = [e1, e2]
-        var times = [20, 20]
+        var enemys = [
+            // this.generateEnemy('Enemy1', 200, false),
+            // this.generateEnemy('ForlornHope', 200, false),
+            // this.generateEnemy('Enemy1', 200, true),
+            // this.generateEnemy('ForlornHope', 200, true),
+            // this.generateEnemy('Boss1', this.limitX/2-60, false),
+            // this.generateEnemy('Boss2', this.limitX/2-60, true),
+            new Enemy1(this.game, this, 'enemy', 10, -20, false),
+            new Enemy1(this.game, this, 'enemy', 40, -20, true),
+            new ForlornHope(this.game, this, 'enemy', 70, -20, false),
+            new ForlornHope(this.game, this, 'enemy', 90, -20, true),
+
+            new Boss1(this.game, this, 'enemy', 250, -20, false),
+            new Boss2(this.game, this, 'enemy', 50, -20, false),
+
+
+        ]
+        var times = [5, 5, 5, 5, 5, 5]
+        var times = [5, 5, 5, 5, 5, 5]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    getBoss1 () {
+        var enemys = [
+            new Boss1(this.game, this, 'enemy', this.limitX/2-60, -20, false)
+            // this.generateEnemy('Boss1', this.limitX/2-60, false),
+        ]
+        var times = [5]
+        var registerEnemys = {
+            'enemys': enemys,
+            'times': times,
+        }
+        return registerEnemys
+    }
+
+    getBoss2 () {
+        var enemys = [
+            this.generateEnemy('Boss2', this.limitX/2-60, true),
+        ]
+        var times = [5]
         var registerEnemys = {
             'enemys': enemys,
             'times': times,
